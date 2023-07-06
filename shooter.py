@@ -13,18 +13,24 @@ pygame.display.set_caption('Shooter')
 clock = pygame.time.Clock()
 FPS = 60
 
-
-
-
 #define player action variables
 moving_left = False
 moving_right = False
 
+#define colors
+BG = (144, 201, 120)
+
+def draw_bg():
+     screen.fill(BG)
+
 class Soldier(pygame.sprite.Sprite):
-     def __init__(self, x, y, scale, speed):
+     def __init__(self, char_type,x, y, scale, speed):
           pygame.sprite.Sprite.__init__(self)
+          self.char_type = char_type
           self.speed = speed
-          img = pygame.image.load('img/player/Idle/0.png')
+          self.direction = 1
+          self.flip = False
+          img = pygame.image.load(f'img/{self.char_type}/Idle/0.png')
           self.image = pygame.transform.scale(img, (int(img.get_width() * scale), (int(img.get_height()) * scale)))
           self.rect = self.image.get_rect()
           self.rect.center = (x, y)
@@ -37,18 +43,23 @@ class Soldier(pygame.sprite.Sprite):
           #assing movement variables if moving left or right
           if moving_left:
                dx = -self.speed
+               self.flip = True
+               self.direction = -1
           if moving_right:
                dx = self.speed
+               self.flip = False
+               self.direction = 1
 
           #update rectangle position
           self.rect.x += dx
           self.rect.y += dy
           
      def draw(self):
-          screen.blit(self.image, self.rect)
+          screen.blit(pygame.transform.flip(self.image, self.flip, False), self.rect)
           
 
-player = Soldier(200, 200, 3, 5)
+player = Soldier('player', 200, 200, 3, 5)
+enemy = Soldier('enemy', 400, 200, 3, 5)
 
 
 
@@ -57,7 +68,10 @@ while run:
      
     clock.tick(FPS)
 
+    draw_bg()
+
     player.draw()
+    enemy.draw()
 
     player.move(moving_left, moving_right)
 
