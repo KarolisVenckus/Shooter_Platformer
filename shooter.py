@@ -20,6 +20,7 @@ GRAVITY = 0.75
 #define player action variables
 moving_left = False
 moving_right = False
+shoot = False
 
 
 #load images
@@ -167,9 +168,16 @@ while run:
     player.draw()
     enemy.draw()
 
+    #update and draw groups
+    bullet_group.update()
+    bullet_group.draw(screen)
 
     #update player actions
     if player.alive:
+        #shoot bullets
+        if shoot:
+             bullet = Bullet(player.rect.centerx + (0.6 * player.rect.size[0] * player.direction), player.rect.centery, player.direction)
+             bullet_group.add(bullet)
         if player.in_air:
              player.update_action(2)#2:jump
         elif moving_left or moving_right:
@@ -188,9 +196,9 @@ while run:
                     moving_left = True
                 if event.key == pygame.K_d:
                     moving_right = True
+                if event.key == pygame.K_SPACE:
+                    shoot = True
                 if event.key == pygame.K_w and player.alive:
-                    player.jump = True
-                if event.key == pygame.K_SPACE and player.alive:
                     player.jump = True
                 if event.key == pygame.K_ESCAPE:
                     run = False 
@@ -201,6 +209,8 @@ while run:
                     moving_left = False
                 if event.key == pygame.K_d:
                     moving_right = False
+                if event.key == pygame.K_SPACE:
+                    shoot = False
 
                     
 
