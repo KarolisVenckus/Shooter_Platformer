@@ -214,6 +214,15 @@ class Grenade(pygame.sprite.Sprite):
           self.rect.center = (x, y)
           self.direction = direction
 
+     def update(self):
+          self.vel_y += GRAVITY
+          dx = self.direction * self.speed
+          dy = self.vel_y
+
+          #update grenade position
+          self.rect.x += dx
+          self.rect.y += dy
+
 
 #create sprite groups
 bullet_group = pygame.sprite.Group()
