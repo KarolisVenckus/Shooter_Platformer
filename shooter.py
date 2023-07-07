@@ -21,11 +21,14 @@ GRAVITY = 0.75
 moving_left = False
 moving_right = False
 shoot = False
+grenade = False
 
 
 #load images
 #bullet
 bullet_img = pygame.image.load('img/icons/bullet.png').convert_alpha()
+#grenade
+grenade_img = pygame.image.load('img/icons/grenade.png').convert_alpha()
 
 
 #define colors
@@ -197,8 +200,22 @@ class Bullet(pygame.sprite.Sprite):
                     self.kill()
           
 
+
+class Grenade(pygame.sprite.Sprite):
+     def __init__(self, x, y, direction):
+          pygame.sprite.Sprite.__init__(self)
+          self.timer = 100
+          self.vel_y = -11
+          self.speed = 7
+          self.image = grenade_img
+          self.rect = self.image.get_rect()
+          self.rect.center = (x, y)
+          self.direction = direction
+
+
 #create sprite groups
 bullet_group = pygame.sprite.Group()
+grenade_group = pygame.sprite.Group()
 
 
 
@@ -222,13 +239,19 @@ while run:
 
     #update and draw groups
     bullet_group.update()
+    grenade_group.update()
     bullet_group.draw(screen)
+    grenade_group.draw(screen)
 
     #update player actions
     if player.alive:
         #shoot bullets
         if shoot:
              player.shoot()
+        #throw grenades
+        elif grenade:
+             grenade = Grenade(player.rect.centerx, player.rect.centery, player.direction)
+             grenade_group.add(grenade)
         if player.in_air:
              player.update_action(2)#2:jump
         elif moving_left or moving_right:
@@ -249,6 +272,8 @@ while run:
                     moving_right = True
                 if event.key == pygame.K_SPACE:
                     shoot = True
+                if event.key == pygame.K_q:
+                    grenade = True
                 if event.key == pygame.K_w and player.alive:
                     player.jump = True
                 if event.key == pygame.K_ESCAPE:
@@ -262,6 +287,8 @@ while run:
                     moving_right = False
                 if event.key == pygame.K_SPACE:
                     shoot = False
+                if event.key == pygame.K_q:
+                    grenade = False
 
                     
 
